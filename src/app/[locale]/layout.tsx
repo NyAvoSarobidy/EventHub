@@ -43,7 +43,7 @@ export default async function LocaleLayout({
               <PageLoader />
             </Suspense>
          
-            <main className="pb-32 min-h-screen pt-[200px] md:pt-[120px]">
+            <main className="min-h-screen pt-20 md:pt-24">
               {children}
             </main>
             <Footer />

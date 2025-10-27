@@ -2,7 +2,7 @@ import React from 'react'
 
 export default function Footer() {
     return (
-    <footer className=" shadow-sm dark:bg-gray-900">
+    <footer className="shadow-sm dark:bg-gray-900">
     <div className="max-w-screen-xl mx-auto p-4 md:py-8">
         <div className="sm:flex sm:items-center sm:justify-between">
             <div className="flex-shrink-0">

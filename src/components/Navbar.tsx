@@ -81,7 +81,7 @@ export default function NavBar() {
         
      
             <Link
-              href="/contacte"
+              href="/contact"
               className="px-4 py-2 text-sm font-semibold text-gray-700 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-all duration-200"
             >
               Contact
@@ -91,7 +91,7 @@ export default function NavBar() {
           <div className="flex items-center">
             <Link
               href="#"
-              className="px-5 py-2.5 text-sm font-bold text-black bg-yellow-400 hover:bg-yellow-500 rounded-lg transition-all duration-200 shadow-sm hover:shadow-md"
+              className="px-5 py-2.5 text-sm font-bold text-white bg-yellow-400 hover:bg-yellow-500 rounded-lg transition-all duration-200 shadow-sm hover:shadow-md"
             >
               + Organiser un événement
             </Link>
