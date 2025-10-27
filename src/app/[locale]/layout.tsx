@@ -4,8 +4,19 @@ import { routing } from '@/i18n/routing';
 import { getMessages } from 'next-intl/server';
 import './globals.css';
 import Providers from '@/components/Providers';
-import NavBar from '@/components/NavBar';
+import NavBar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import PageLoader from '@/components/PageLoader';
+import { Suspense } from 'react';
+
+export const metadata = {
+  title: {
+    default: 'EventHub',
+    template: '%s | EventHub' // %s sera remplacé par le titre de chaque page
+  },
+  description: 'Plateforme de réservation et organisation d\'événements',
+}
+
 
 export default async function LocaleLayout({
   children,
@@ -28,7 +39,11 @@ export default async function LocaleLayout({
         <NextIntlClientProvider locale={locale} messages={messages}>
           <Providers>
             <NavBar />
-            <main className="">
+            <Suspense fallback={null}>
+              <PageLoader />
+            </Suspense>
+         
+            <main className="pb-32 min-h-screen pt-[200px] md:pt-[120px]">
               {children}
             </main>
             <Footer />

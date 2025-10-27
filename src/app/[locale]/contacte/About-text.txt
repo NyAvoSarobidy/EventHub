@@ -1,0 +1,20 @@
+Bienvenue sur [Nom de ton site], la plateforme moderne dédiée à la découverte et à l’inscription d’événements.
+Notre mission est simple : connecter les visiteurs aux événements qui les inspirent, qu’il s’agisse de conférences, d’expositions, de salons ou de rencontres culturelles.
+
+Nous offrons une expérience fluide, intuitive et élégante pour permettre à chacun de :
+
+🔍 Explorer facilement les événements à venir grâce à une recherche intelligente et des filtres par date, lieu ou catégorie.
+
+🗓️ Découvrir les détails complets de chaque événement : programme, horaires, intervenants et emplacement.
+
+📝 S’inscrire en quelques clics via un formulaire simple et sécurisé.
+
+🎉 Recevoir une confirmation instantanée et ajouter l’événement à son calendrier.
+
+Notre interface, inspirée d’outils modernes comme Eventbrite, Notion et Airtable, allie design épuré et expérience utilisateur intuitive.
+Les visiteurs profitent d’un design adaptatif (mobile et desktop), d’un mode clair/sombre, et d’interactions douces et réactives pour une navigation agréable à tout moment.
+
+Pendant ce temps, les organisateurs disposent d’un espace dédié (accessible séparément) pour gérer leurs événements, suivre les inscriptions et analyser les données en toute simplicité.
+
+Avec [Nom de ton site], participer à un événement n’a jamais été aussi simple, rapide et agréable.
+✨ Découvrez, inscrivez-vous, et vivez pleinement vos événements !
