@@ -1,21 +1,177 @@
-
 'use client'
 import Link from 'next/link';
+import { useState } from 'react';
 
 export default function Event (){
+    const [selectedEvent, setSelectedEvent] = useState<any>(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
     const images = [
-        { src: "/pub/pub-.jpg", alt: "image 1" },
-        { src: "/pub/pub-2.jpg", alt: "image 2" },
-        { src: "/pub/pub-3.jpg", alt: "image 3" },
-        { src: "/pub/pub-4.jpg", alt: "image 4" },
-        { src: "/pub/pub-5.jpg", alt: "image 5" },
-        { src: "/pub/pub-6.jpg", alt: "image 6" },
-        { src: "/pub/pub-7.jpg", alt: "image 7" },
-        { src: "/pub/pub-8.jpg", alt: "image 8" },
-        { src: "/pub/pub-9.jpg", alt: "image 9" },
-        { src: "/pub/pub-10.jpg", alt: "image 10"},
-        { src: "/pub/pub-11.jpg", alt: "image 11"}
-    ]
+        { 
+            src: "/pub/pub-.jpg", 
+            alt: "image 1", 
+            titre: "Salon Tech 2025", 
+            date: "12/12/2025", 
+            type: "Salons",
+            lieu: "Paris Expo Porte de Versailles",
+            horaire: "9h00 - 18h00",
+            description: "Le plus grand salon technologique de l'année. Découvrez les dernières innovations en IA, robotique et technologies vertes.",
+            programme: ["Conférences avec experts internationaux", "Démonstrations produits", "Foire avec 500+ exposants", "Ateliers pratiques"],
+            payement : "Gratuit",
+            prix : "0 MGA",
+            places: 500
+        },
+        { 
+            src: "/pub/pub-2.jpg", 
+            alt: "image 2", 
+            titre: "Conférence IA", 
+            date: "15/01/2026", 
+            type: "Conférences",
+            lieu: "Station F, Paris",
+            horaire: "14h00 - 17h00",
+            description: "Plongez dans l'univers de l'Intelligence Artificielle avec des experts du domaine. Découvrez les applications concrètes de l'IA.",
+            programme: ["Introduction à l'IA moderne", "Cas d'usage en entreprise", "Éthique et IA", "Session Q&A"],
+            payement : "Payant",
+            prix : "2000 MGA",
+            places: 200
+        },
+        { 
+            src: "/pub/pub-3.jpg", 
+            alt: "image 3", 
+            titre: "Workshop Digital", 
+            date: "20/01/2026", 
+            type: "Workshops",
+            lieu: "Le Wagon, Lyon",
+            horaire: "10h00 - 16h00",
+            description: "Atelier pratique sur les outils digitaux essentiels pour les entrepreneurs et freelances modernes.",
+            programme: ["Marketing digital", "Outils de productivité", "Automation", "Projet pratique"],
+            payement : "Payant",
+            prix : "2000 MGA",
+            places: 50
+        },
+        { 
+            src: "/pub/pub-4.jpg", 
+            alt: "image 4", 
+            titre: "Foire Event", 
+            date: "25/01/2026", 
+            type: "Foire",
+            lieu: "WeWork, Marseille",
+            horaire: "18h00 - 21h00",
+            description: "Soirée Foire pour entrepreneurs, startups et investisseurs. Élargissez votre réseau professionnel.",
+            programme: ["Speed Foire", "Pitch sessions", "Cocktail dinatoire", "Échanges libres"],
+            payement : "Payant",
+            prix : "2000 MGA",
+            places: 150
+        },
+        { 
+            src: "/pub/pub-5.jpg", 
+            alt: "image 5", 
+            titre: "Innovation Summit", 
+            date: "01/02/2026", 
+            type: "Salons",
+            lieu: "Palais des Congrès, Nice",
+            horaire: "9h00 - 19h00",
+            description: "Sommet de l'innovation réunissant les acteurs majeurs de la transformation digitale en France.",
+            programme: ["Keynotes inspirantes", "Tables rondes", "Expo innovation", "Awards ceremony"],
+            payement : "Payant",
+            prix : "5000 MGA",
+            places: 800
+        },
+        { 
+            src: "/pub/pub-6.jpg", 
+            alt: "image 6", 
+            titre: "Startup Pitch", 
+            date: "05/02/2026", 
+            type: "Conférences",
+            lieu: "La French Tech, Toulouse",
+            horaire: "15h00 - 19h00",
+            description: "Concours de pitch pour startups avec jury d'investisseurs. Présentez votre projet et gagnez un financement.",
+            programme: ["Pitchs de 5 minutes", "Feedback des jurés", "Foire", "Annonce des gagnants"],
+            payement : "Payant",
+            prix : "5000 MGA",
+            places: 100
+        },
+        { 
+            src: "/pub/pub-7.jpg", 
+            alt: "image 7", 
+            titre: "Design Thinking", 
+            date: "10/02/2026", 
+            type: "Workshops",
+            lieu: "Schoolab, Paris",
+            horaire: "9h00 - 17h00",
+            description: "Formation intensive au Design Thinking. Apprenez à innover et résoudre des problèmes complexes.",
+            programme: ["Méthodologie complète", "Exercices pratiques", "Cas réels", "Certification"],
+            payement : "Gratuit",
+            prix : "0 MGA",
+            places: 30
+        },
+        { 
+            src: "/pub/pub-8.jpg", 
+            alt: "image 8", 
+            titre: "Business Meetup", 
+            date: "15/02/2026", 
+            type: "Foire",
+            lieu: "Anticafe, Bordeaux",
+            horaire: "17h00 - 20h00",
+            description: "Rencontre mensuelle des entrepreneurs bordelais. Échangez sur vos défis et opportunités.",
+            programme: ["Présentation des participants", "Groupes de discussion", "Apéro Foire", "Échanges de cartes"],
+            payement : "Payant",
+            prix : "2000 MGA",
+            places: 80
+        },
+        { 
+            src: "/pub/pub-9.jpg", 
+            alt: "image 9", 
+            titre: "Tech Conference", 
+            date: "20/02/2026", 
+            type: "Conférences",
+            lieu: "Euratechnologies, Lille",
+            horaire: "13h00 - 18h00",
+            description: "Conférence sur les technologies émergentes : blockchain, IoT, cloud computing et cybersécurité.",
+            programme: ["4 conférences thématiques", "Démonstrations live", "Panel d'experts", "Foire cocktail"],
+            payement : "Payant",
+            prix : "5000 MGA",
+            places: 250
+        },
+        { 
+            src: "/pub/pub-10.jpg", 
+            alt: "image 10", 
+            titre: "Coding Workshop", 
+            date: "25/02/2026", 
+            type: "Workshops",
+            lieu: "42, Paris",
+            horaire: "10h00 - 18h00",
+            description: "Journée intensive de code. Apprenez React, Next.js et développez une application complète.",
+            programme: ["Setup environnement", "React fundamentals", "Next.js avancé", "Projet final"],
+            payement : "Payant",
+            prix : "5000 MGA",
+            places: 40
+        },
+        { 
+            src: "/pub/pub-11.jpg", 
+            alt: "image 11", 
+            titre: "Innovation Day", 
+            date: "01/03/2026", 
+            type: "Salons",
+            lieu: "Lyon Convention Centre",
+            horaire: "8h00 - 20h00",
+            description: "Journée dédiée à l'innovation dans tous les secteurs. Conférences, ateliers et exposition.",
+            programme: ["Plénière d'ouverture", "20+ conférences parallèles", "Expo 100+ stands", "Soirée de clôture"],
+            payement : "Gratuit",
+            prix : "0 MGA",
+            places: 1000
+        }
+    ];
+
+    const openModal = (event: any) => {
+        setSelectedEvent(event);
+        setIsModalOpen(true);
+    };
+
+    const closeModal = () => {
+        setIsModalOpen(false);
+        setTimeout(() => setSelectedEvent(null), 300);
+    };
 
     return (
          <section className="py-20 bg-white">
@@ -29,17 +185,6 @@ export default function Event (){
                         </p>
                     </div>
                       {/* Filtres */}
-            <div className="flex flex-wrap justify-center gap-3 mb-8">
-            {['Tous', 'Salons', 'Conférences', 'Workshops', 'Networking'].map((filter) => (
-                <button
-                key={filter}
-                className="px-4 py-2 rounded-full border border-gray-300 text-gray-700 hover:border-yellow-500 hover:bg-yellow-50 hover:text-yellow-700 transition-all duration-200 font-medium"
-                >
-                {filter}
-                </button>
-            ))}
-            </div>
-     
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 {images.map((image, index) => (
                 <div
@@ -57,9 +202,12 @@ export default function Event (){
                     {/* Overlay au survol */}
                     <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-all duration-300 flex items-center justify-center">
                         <div className="opacity-0 group-hover:opacity-100 transform translate-y-4 group-hover:translate-y-0 transition-all duration-300">
-                        <button className="bg-white/90 text-gray-900 font-semibold px-4 py-2 rounded-lg backdrop-blur-sm hover:bg-white transition-colors">
+                        <Link 
+                            href={`/inscription?event=${encodeURIComponent(image.titre)}&date=${encodeURIComponent(image.date)}&type=${encodeURIComponent(image.type)}&payement=${encodeURIComponent(image.payement)}&prix=${encodeURIComponent(image.prix)}`}
+                            className="bg-white/90 text-gray-900 font-semibold px-4 py-2 rounded-lg backdrop-blur-sm hover:bg-white transition-colors"
+                        >
                             S'inscrire
-                        </button>
+                        </Link>
                         </div>
                     </div>
                     
@@ -72,24 +220,184 @@ export default function Event (){
                     {/* Légende */}
                     <div className="p-4">
                     <h3 className="font-semibold text-gray-900 text-lg mb-1">
-                        Événement {index + 1}
+                        {image.titre}
                     </h3>
+                    <p className="font-semibold text-red-800 text-xs mb-1">
+                       {image.payement} : {image.prix}
+                    </p>
                     <p className="text-gray-600 text-sm">
                         {image.alt}
                     </p>
                     <div className="flex items-center justify-between mt-3">
                         <span className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded-full">
-                        📅 12/12/2025
+                        📅 {image.date}
                         </span>
-                        <span className="text-xs text-yellow-600 font-semibold">
+                        <button
+                            onClick={() => openModal(image)}
+                            className="text-xs text-yellow-600 font-semibold hover:text-yellow-700"
+                        >
                         En savoir plus →
-                        </span>
+                        </button>
                     </div>
                     </div>
                 </div>
                 ))}
             </div>
             </div>
+
+            {/* Modal */}
+            {isModalOpen && selectedEvent && (
+                <div 
+                    className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-fade-in"
+                    onClick={closeModal}
+                >
+                    <div 
+                        className="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl animate-scale-in"
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        {/* Header avec image */}
+                        <div className="relative h-64 overflow-hidden rounded-t-2xl">
+                            <img 
+                                src={selectedEvent.src} 
+                                alt={selectedEvent.titre}
+                                className="w-full h-full object-cover"
+                            />
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                            <button
+                                onClick={closeModal}
+                                className="absolute top-4 right-4 bg-white/90 hover:bg-white text-gray-900 rounded-full p-2 transition-all duration-200 shadow-lg"
+                            >
+                                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"/>
+                                </svg>
+                            </button>
+                            <div className="absolute bottom-4 left-4 right-4">
+                                <h2 className="text-3xl font-bold text-white mb-2">{selectedEvent.titre}</h2>
+                                <span className="inline-block px-3 py-1 bg-yellow-500 text-white text-sm font-semibold rounded-full">
+                                    {selectedEvent.type}
+                                </span>
+                            </div>
+                              <div className="absolute bottom-4 right-4">
+                                <p className="text-3xl font-bold text-white mb-2">{selectedEvent.payement}</p>
+                                <span className="inline-block px-3 py-1 bg-yellow-500 text-white text-sm font-semibold rounded-full">
+                                    {selectedEvent.prix}
+                                </span>
+                            </div>
+                        </div>
+
+                        {/* Contenu */}
+                        <div className="p-6 space-y-6">
+                            {/* Informations clés */}
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <div className="flex items-center space-x-3 bg-gray-50 p-3 rounded-lg">
+                                    <div className="bg-yellow-100 p-2 rounded-lg">
+                                        <svg className="w-5 h-5 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <p className="text-xs text-gray-500 font-medium">Date</p>
+                                        <p className="text-sm font-semibold text-gray-900">{selectedEvent.date}</p>
+                                    </div>
+                                </div>
+
+                                <div className="flex items-center space-x-3 bg-gray-50 p-3 rounded-lg">
+                                    <div className="bg-yellow-100 p-2 rounded-lg">
+                                        <svg className="w-5 h-5 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <p className="text-xs text-gray-500 font-medium">Horaire</p>
+                                        <p className="text-sm font-semibold text-gray-900">{selectedEvent.horaire}</p>
+                                    </div>
+                                </div>
+
+                                <div className="flex items-center space-x-3 bg-gray-50 p-3 rounded-lg">
+                                    <div className="bg-yellow-100 p-2 rounded-lg">
+                                        <svg className="w-5 h-5 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <p className="text-xs text-gray-500 font-medium">Places</p>
+                                        <p className="text-sm font-semibold text-gray-900">{selectedEvent.places} places</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Lieu */}
+                            <div className="bg-yellow-50 border-l-4 border-yellow-500 p-4 rounded-r-lg">
+                                <div className="flex items-center space-x-2">
+                                    <svg className="w-5 h-5 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                    </svg>
+                                    <div>
+                                        <p className="text-xs text-gray-600 font-medium">Lieu</p>
+                                        <p className="text-sm font-bold text-gray-900">{selectedEvent.lieu}</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Description */}
+                            <div>
+                                <h3 className="text-lg font-bold text-gray-900 mb-2">Description</h3>
+                                <p className="text-gray-600 leading-relaxed">{selectedEvent.description}</p>
+                            </div>
+
+                            {/* Programme */}
+                            <div>
+                                <h3 className="text-lg font-bold text-gray-900 mb-3">Programme</h3>
+                                <ul className="space-y-2">
+                                    {selectedEvent.programme.map((item: string, idx: number) => (
+                                        <li key={idx} className="flex items-start space-x-3">
+                                            <div className="bg-yellow-500 text-white rounded-full w-6 h-6 flex items-center justify-center flex-shrink-0 mt-0.5">
+                                                <span className="text-xs font-bold">{idx + 1}</span>
+                                            </div>
+                                            <span className="text-gray-700">{item}</span>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+
+                            {/* Bouton d'inscription */}
+                            <div className="pt-4 border-t border-gray-200">
+                                <Link
+                                    href={`/inscription?event=${encodeURIComponent(selectedEvent.titre)}&date=${encodeURIComponent(selectedEvent.date)}&type=${encodeURIComponent(selectedEvent.type)}`}
+                                    className="block w-full bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 text-white font-bold py-4 rounded-lg transition-all duration-300 transform hover:scale-105 text-center shadow-lg"
+                                    onClick={closeModal}
+                                >
+                                    S'inscrire à cet événement
+                                </Link>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            <style jsx>{`
+                @keyframes fadeIn {
+                    from { opacity: 0; }
+                    to { opacity: 1; }
+                }
+                @keyframes scaleIn {
+                    from { 
+                        opacity: 0;
+                        transform: scale(0.9);
+                    }
+                    to { 
+                        opacity: 1;
+                        transform: scale(1);
+                    }
+                }
+                .animate-fade-in {
+                    animation: fadeIn 0.3s ease-out;
+                }
+                .animate-scale-in {
+                    animation: scaleIn 0.3s ease-out;
+                }
+            `}</style>
         </section>
     )
 }
