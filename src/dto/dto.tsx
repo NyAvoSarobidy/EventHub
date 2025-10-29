@@ -21,7 +21,10 @@ export interface EventDTO {
 
 export interface participantDTO {
   nom: string | string[];             // nom du participant
-  description: string;      // Description détaillée de l'événement
+  description: string;      // Description détaillée du participant
+  apropos: string;      // A propos du participant
+  logo_src: string;             // Chemin du logo du participant (Optionel)
+  siteweb: string;          // Site web du participant (Optionel)
   programme: string[];      // Liste des activités du programme
   id_event : Int16Array;       // Identifiant unique de l'événement 
 }
