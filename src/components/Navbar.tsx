@@ -3,9 +3,40 @@
 import React from "react";
 import { Search, Menu, X } from "lucide-react";
 import Link from 'next/link';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 export default function NavBar() {
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
+  const [searchQuery, setSearchQuery] = React.useState("");
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  React.useEffect(() => {
+    // Initialiser avec le paramètre de recherche de l'URL si présent
+    const query = searchParams.get('search');
+    if (query) {
+      setSearchQuery(query);
+    }
+  }, [searchParams]);
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      router.push(`/?search=${encodeURIComponent(searchQuery.trim())}`);
+    } else {
+      router.push('/');
+    }
+  };
+
+  const handleSearchChange = (value: string) => {
+    setSearchQuery(value);
+    // Recherche en temps réel (optionnel)
+    if (value.trim()) {
+      router.push(`/?search=${encodeURIComponent(value.trim())}`);
+    } else {
+      router.push('/');
+    }
+  };
 
   return (
   <nav className="bg-white border-b border-gray-200 shadow-sm fixed top-0 left-0 right-0 z-50">
@@ -14,24 +45,28 @@ export default function NavBar() {
         <div className="flex items-center justify-between py-4 border-b border-gray-100">
           {/* Logo EventHub */}
           <div className="flex-shrink-0">
-            <h1 className="text-xl sm:text-2xl font-bold tracking-tight">
-              <span className="text-gray-900">Event</span>
-              <span className="text-yellow-400">Hub</span>
-            </h1>
+            <Link href="/">
+              <h1 className="text-xl sm:text-2xl font-bold tracking-tight cursor-pointer">
+                <span className="text-gray-900">Event</span>
+                <span className="text-yellow-400">Hub</span>
+              </h1>
+            </Link>
           </div>
 
           {/* Barre de recherche - Cachée sur mobile */}
           <div className="hidden md:flex flex-1 max-w-2xl mx-8">
-            <div className="relative w-full">
+            <form onSubmit={handleSearch} className="relative w-full">
               <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
                 <Search className="h-5 w-5 text-gray-400" />
               </div>
               <input
                 type="text"
+                value={searchQuery}
+                onChange={(e) => handleSearchChange(e.target.value)}
                 placeholder="Rechercher un événement, un lieu, une date..."
                 className="block w-full rounded-lg border border-gray-300 pl-11 pr-4 py-3 text-sm text-gray-900 placeholder-gray-500 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 focus:outline-none transition-all duration-200 font-normal"
               />
-            </div>
+            </form>
           </div>
 
           {/* Logo Akory ABY!!! - Caché sur mobile */}
@@ -57,16 +92,18 @@ export default function NavBar() {
 
         {/* Barre de recherche mobile */}
         <div className="md:hidden py-3">
-          <div className="relative">
+          <form onSubmit={handleSearch} className="relative">
             <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
               <Search className="h-5 w-5 text-gray-400" />
             </div>
             <input
               type="text"
+              value={searchQuery}
+              onChange={(e) => handleSearchChange(e.target.value)}
               placeholder="Rechercher..."
               className="block w-full rounded-lg border border-gray-300 pl-11 pr-4 py-2.5 text-sm text-gray-900 placeholder-gray-500 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 focus:outline-none transition-all duration-200 font-normal"
             />
-          </div>
+          </form>
         </div>
 
         {/* Menu principal - Desktop */}
@@ -78,13 +115,19 @@ export default function NavBar() {
             >
               Accueil
             </Link>
-        
      
             <Link
               href="/contact"
               className="px-4 py-2 text-sm font-semibold text-gray-700 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-all duration-200"
             >
               Contact
+            </Link>
+
+            <Link
+              href="/evenements"
+              className="px-4 py-2 text-sm font-semibold text-gray-700 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-all duration-200"
+            >
+              Liste des événements
             </Link>
           </div>
 
@@ -102,19 +145,26 @@ export default function NavBar() {
         {mobileMenuOpen && (
           <div className="md:hidden py-4 space-y-2 border-t border-gray-100">
             <Link 
-            href="/" 
-            className="block px-4 py-3 text-sm font-semibold text-gray-900 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-all duration-200"
+              href="/" 
+              className="block px-4 py-3 text-sm font-semibold text-gray-900 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-all duration-200"
             >
-            Accueil
+              Accueil
             </Link>
-   
             
             <Link
-              href="/contacte"
+              href="/contact"
               className="block px-4 py-3 text-sm font-semibold text-gray-700 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-all duration-200"
             >
               Contact
             </Link>
+            
+            <Link
+              href="/evenements"
+              className="block px-4 py-3 text-sm font-semibold text-gray-700 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-all duration-200"
+            >
+              Liste des événements
+            </Link>
+            
             <Link
               href="#"
               className="block w-full px-5 py-3 text-sm font-bold text-center text-white bg-yellow-400 hover:bg-yellow-500 rounded-lg transition-all duration-200 shadow-sm hover:shadow-md"

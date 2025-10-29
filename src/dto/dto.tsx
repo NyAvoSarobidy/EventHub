@@ -16,6 +16,7 @@ export interface EventDTO {
   programme: string[];      // Liste des activités du programme
   payement: string | string[];    // Type de paiement (Gratuit ou Payant)
   prix: string;             // Prix (format: "0 MGA" ou "2000 MGA")
+  number_stand : number;      // Nombre de stands disponibles
   places: number;           // Nombre de places disponibles
 }
 
@@ -26,6 +27,7 @@ export interface participantDTO {
   logo_src: string;             // Chemin du logo du participant (Optionel)
   siteweb: string;          // Site web du participant (Optionel)
   programme: string[];      // Liste des activités du programme
+  stand_number : string;      // Numéro du stand 
   id_event : Int16Array;       // Identifiant unique de l'événement 
 }
 

@@ -1,43 +1,41 @@
-
 'use client'
-
 
 export default function Apropos() {
 
     return (
-        <section id="#apropos" className="py-20 bg-white">
+        <section className="py-20 bg-white">
               
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
                 {/* En-tête avec animations */}
                 <div className="text-center mb-16">
-                <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6">
+                <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
                     <span className="opacity-0 animate-fade-in-up">A propos sur </span>
-                    <span className="text-yellow-500 opacity-0 animate-bounce-in">EvenHub</span>
+                    <span className="text-yellow-500 opacity-0 animate-bounce-in">EventHub</span>
                 </h1>
-                <div className="w-32 h-1.5 bg-gradient-to-r from-yellow-400 to-yellow-500 mx-auto mb-8 rounded-full opacity-0 animate-scale-in"></div>
-                <p className="text-xl md:text-2xl text-gray-700 max-w-3xl mx-auto leading-relaxed opacity-0 animate-fade-in-delayed">
+                <div className="w-24 h-1.5 bg-gradient-to-r from-yellow-400 to-yellow-500 mx-auto mb-8 rounded-full opacity-0 animate-scale-in"></div>
+                <p className="text-lg md:text-xl text-gray-700 max-w-2xl mx-auto leading-relaxed opacity-0 animate-fade-in-delayed">
                     La plateforme moderne dédiée à la <span className="text-yellow-500 font-semibold">découverte</span> et à l'<span className="text-yellow-500 font-semibold">inscription</span> d'événements
                 </p>
                 </div>
 
                
-                <div className="grid lg:grid-cols-2 gap-16 items-start pt-4">
+                <div className="grid lg:grid-cols-2 gap-12 items-start pt-4">
                 
-                <div className="space-y-8">
-                    {/* Mission */}
-                    <div className="bg-gradient-to-br from-gray-50 to-white rounded-3xl p-8 shadow-xl border border-gray-100 hover:shadow-2xl transition-all duration-300 opacity-0 animate-slide-in-left">
-                    <div className="flex items-center mb-6">
-                        <div className="w-4 h-4 bg-yellow-500 rounded-full mr-4 shadow-lg"></div>
-                        <h2 className="text-3xl font-bold text-gray-900">Notre Mission</h2>
+                <div className="space-y-6">
+               
+                    <div className="bg-gradient-to-br from-gray-50 to-white rounded-2xl p-6 shadow-xl border border-gray-100 hover:shadow-2xl transition-all duration-300 opacity-0 animate-slide-in-left">
+                    <div className="flex items-center mb-4">
+                        <div className="w-3 h-3 bg-yellow-500 rounded-full mr-3 shadow-lg"></div>
+                        <h2 className="text-2xl font-bold text-gray-900">Notre Mission</h2>
                     </div>
-                    <p className="text-gray-700 text-lg leading-relaxed">
+                    <p className="text-gray-700 text-base leading-relaxed">
                         Connecter les visiteurs aux événements qui les <span className="text-yellow-500 font-semibold">inspirent</span>, qu'il s'agisse de conférences, d'expositions, de salons ou de rencontres culturelles.
                     </p>
                     </div>
 
-                    {/* Fonctionnalités */}
-                    <div className="space-y-6 opacity-0 animate-slide-in-left-delayed">
-                    <h3 className="text-2xl font-bold text-gray-900 mb-6 text-center md:text-left">Ce que nous offrons :</h3>
+                   
+                    <div className="space-y-4 opacity-0 animate-slide-in-left-delayed">
+                    <h3 className="text-xl font-bold text-gray-900 mb-4 text-center md:text-left">Ce que nous offrons :</h3>
                     
                     {[
                         { icon: "🔍", title: "Exploration Facile", desc: "Recherche intelligente avec filtres par date, lieu et catégorie" },
@@ -47,15 +45,15 @@ export default function Apropos() {
                     ].map((feature, index) => (
                         <div 
                         key={index}
-                        className="flex items-start space-x-5 p-6 bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 hover:border-yellow-200 group opacity-0 animate-stagger-fade-in"
+                        className="flex items-start space-x-4 p-5 bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 hover:border-yellow-200 group opacity-0 animate-stagger-fade-in"
                         style={{ animationDelay: `${1.2 + (index * 0.1)}s` }}
                         >
-                        <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-yellow-400 to-yellow-500 rounded-xl flex items-center justify-center shadow-md group-hover:scale-110 transition-transform duration-300">
-                            <span className="text-white text-lg">{feature.icon}</span>
+                        <div className="flex-shrink-0 w-10 h-10 bg-gradient-to-br from-yellow-400 to-yellow-500 rounded-lg flex items-center justify-center shadow-md group-hover:scale-110 transition-transform duration-300">
+                            <span className="text-white text-base">{feature.icon}</span>
                         </div>  
                         <div className="flex-1">
-                            <h4 className="font-bold text-gray-900 text-lg mb-2">{feature.title}</h4>
-                            <p className="text-gray-600 leading-relaxed">{feature.desc}</p>
+                            <h4 className="font-bold text-gray-900 text-base mb-1">{feature.title}</h4>
+                            <p className="text-gray-600 text-sm leading-relaxed">{feature.desc}</p>
                         </div>
                         </div>
                     ))}
@@ -64,31 +62,29 @@ export default function Apropos() {
 
              
                 <div className="relative opacity-0 animate-slide-in-right">
-                    <div className="bg-gradient-to-br from-yellow-400 to-yellow-500 rounded-3xl p-8 shadow-2xl h-full min-h-[500px] flex items-center justify-center">
+                    <div className="bg-gradient-to-br from-yellow-400 to-yellow-500 rounded-2xl p-6 shadow-2xl h-full min-h-[400px] flex items-center justify-center">
                     <div className="text-center text-white">
-                        <div className="w-24 h-24 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-6 opacity-0 animate-rotate-in">
-                        <span className="text-4xl">📅</span>
+                        <div className="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-5 opacity-0 animate-rotate-in">
+                        <span className="text-3xl">📅</span>
                         </div>
-                        <h3 className="text-3xl font-bold mb-4 opacity-0 animate-fade-in-up-delayed">Découvrez des Événements Exceptionnels</h3>
-                        <p className="text-lg opacity-90 mb-6 opacity-0 animate-fade-in-up-more-delayed">
+                        <h3 className="text-2xl font-bold mb-3 opacity-0 animate-fade-in-up-delayed">Découvrez des Événements Exceptionnels</h3>
+                        <p className="text-base opacity-90 mb-5 opacity-0 animate-fade-in-up-more-delayed">
                         Rejoignez une communauté passionnée et vivez des expériences uniques
                         </p>
-                        <div className="flex flex-wrap justify-center gap-3 opacity-0 animate-fade-in-up-final">
-                        <span className="bg-white/20 px-4 py-2 rounded-full text-sm font-semibold">Conférences</span>
-                        <span className="bg-white/20 px-4 py-2 rounded-full text-sm font-semibold">Expositions</span>
-                        <span className="bg-white/20 px-4 py-2 rounded-full text-sm font-semibold">Salons</span>
-                        <span className="bg-white/20 px-4 py-2 rounded-full text-sm font-semibold">Culture</span>
+                        <div className="flex flex-wrap justify-center gap-2 opacity-0 animate-fade-in-up-final">
+                        <span className="bg-white/20 px-3 py-1.5 rounded-full text-sm font-semibold">Conférences</span>
+                        <span className="bg-white/20 px-3 py-1.5 rounded-full text-sm font-semibold">Expositions</span>
+                        <span className="bg-white/20 px-3 py-1.5 rounded-full text-sm font-semibold">Salons</span>
+                        <span className="bg-white/20 px-3 py-1.5 rounded-full text-sm font-semibold">Culture</span>
                         </div>
                     </div>
                     </div>
                     
                     {/* Éléments décoratifs */}
-                    <div className="absolute -top-4 -right-4 w-8 h-8 bg-yellow-300 rounded-full opacity-60 animate-pulse"></div>
-                    <div className="absolute -bottom-6 -left-6 w-12 h-12 bg-yellow-200 rounded-full opacity-40"></div>
+                    <div className="absolute -top-3 -right-3 w-6 h-6 bg-yellow-300 rounded-full opacity-60 animate-pulse"></div>
+                    <div className="absolute -bottom-4 -left-4 w-8 h-8 bg-yellow-200 rounded-full opacity-40"></div>
                 </div>
                 </div>
-                    <div className="absolute -top-4 -right-4 w-8 h-8 bg-yellow-300 rounded-full opacity-60 animate-pulse"></div>
-                    <div className="absolute -bottom-6 -left-6 w-12 h-12 bg-yellow-200 rounded-full opacity-40"></div>
             </div>
                 <style jsx>{`
                 .animate-infinite-wave {
