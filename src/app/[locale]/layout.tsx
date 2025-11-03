@@ -8,6 +8,15 @@ import NavBar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import PageLoader from '@/components/PageLoader';
 import { Suspense } from 'react';
+import Head from 'next/head';
+
+<Head>
+  <link rel="manifest" href="/manifest.json" />
+  <meta name="theme-color" content="#000000" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+</Head>
+
+
 
 export const metadata = {
   title: {
