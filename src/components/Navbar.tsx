@@ -22,24 +22,25 @@ export default function NavBar() {
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
-      router.push(`/?search=${encodeURIComponent(searchQuery.trim())}`);
+      // Rediriger vers la page evenements avec la recherche
+      router.push(`/evenements?search=${encodeURIComponent(searchQuery.trim())}`);
     } else {
-      router.push('/');
+      router.push('/evenements');
     }
   };
 
   const handleSearchChange = (value: string) => {
     setSearchQuery(value);
-    // Recherche en temps réel (optionnel)
-    if (value.trim()) {
-      router.push(`/?search=${encodeURIComponent(value.trim())}`);
-    } else {
-      router.push('/');
-    }
+    // Recherche en temps réel (optionnel) - décommenter si souhaité
+    // if (value.trim()) {
+    //   router.push(`/evenements?search=${encodeURIComponent(value.trim())}`);
+    // } else {
+    //   router.push('/evenements');
+    // }
   };
 
   return (
-  <nav className="bg-white border-b border-gray-200 shadow-sm fixed top-0 left-0 right-0 z-50">
+    <nav className="bg-white border-b border-gray-200 shadow-sm fixed top-0 left-0 right-0 z-50">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Logo et barre de recherche */}
         <div className="flex items-center justify-between py-4 border-b border-gray-100">
@@ -62,10 +63,16 @@ export default function NavBar() {
               <input
                 type="text"
                 value={searchQuery}
-                onChange={(e) => handleSearchChange(e.target.value)}
+                onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Rechercher un événement, un lieu, une date..."
                 className="block w-full rounded-lg border border-gray-300 pl-11 pr-4 py-3 text-sm text-gray-900 placeholder-gray-500 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 focus:outline-none transition-all duration-200 font-normal"
               />
+              <button 
+                type="submit"
+                className="absolute inset-y-0 right-0 flex items-center pr-3"
+              >
+                <Search className="h-5 w-5 text-gray-400 hover:text-gray-600" />
+              </button>
             </form>
           </div>
 
@@ -99,10 +106,16 @@ export default function NavBar() {
             <input
               type="text"
               value={searchQuery}
-              onChange={(e) => handleSearchChange(e.target.value)}
+              onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Rechercher..."
               className="block w-full rounded-lg border border-gray-300 pl-11 pr-4 py-2.5 text-sm text-gray-900 placeholder-gray-500 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 focus:outline-none transition-all duration-200 font-normal"
             />
+            <button 
+              type="submit"
+              className="absolute inset-y-0 right-0 flex items-center pr-3"
+            >
+              <Search className="h-5 w-5 text-gray-400 hover:text-gray-600" />
+            </button>
           </form>
         </div>
 

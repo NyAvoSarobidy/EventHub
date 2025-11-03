@@ -1,61 +1,203 @@
+// page.tsx
 'use client'
 
 import { useState, useEffect } from 'react'
 import { useSearchParams } from 'next/navigation'
+import { eventAPI } from '../../../api/api';
+
+interface Event {
+  id: string;
+  title: string;
+  date_debut: string;
+  date_fin: string;
+  description: string;
+  location: string;
+  image_url: string;
+  participants_count: number;
+  companies_count: number;
+  is_upcoming: boolean;
+  is_ongoing: boolean;
+  is_past: boolean;
+}
+
+interface Question {
+  id: string;
+  event_id: string;
+  question_text: string;
+  question_type: string;
+  options: string[];
+  order: number;
+  is_required: boolean;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+}
 
 export default function InscriptionForm() {
+  const [showSuccessModal, setShowSuccessModal] = useState(false)
+  const [showErrorModal, setShowErrorModal] = useState(false)
+  const [modalMessage, setModalMessage] = useState('')
+
   const searchParams = useSearchParams()
   const [step, setStep] = useState(1)
+  const [loading, setLoading] = useState(true)
+  const [questions, setQuestions] = useState<Question[]>([])
+  const [questionResponses, setQuestionResponses] = useState<{[key: string]: string}>({})
   
   // État pour stocker les informations de l'événement sélectionné
   const [eventInfo, setEventInfo] = useState({
+    id: '',
     titre: '',
     date: '',
     type: '',
-    prix: '',
-    payement : '',
+    lieu: '',
+    horaire: ''
   })
   
   const [formData, setFormData] = useState({
-    // Étape 1
-    nom: '',
-    prenom: '',
-    entreprise: '',
-    telephone: '',
+    // Étape 1 - Champs correspondant à l'API
+    id_event: '',
+    annee_experience: '',
+    centres_interet: [] as string[],
     email: '',
+    entreprise: '',
+    nom: '',
     poste: '',
-    
-    // Étape 2
-    source: '',
-    attentes: '',
-    objectifs: '',
-    apprentissage: '',
-    resultats: ''
+    prenom: '',
+    profil_linkedin: '',
+    recevoir_mises_a_jour: true,
+    region: '',
+    secteur_activite: '',
+    telephone: ''
   })
 
-  // Récupérer les informations de l'événement depuis l'URL
-  useEffect(() => {
-    const event = searchParams.get('event')
-    const date = searchParams.get('date')
-    const type = searchParams.get('type')
-    const prix = searchParams.get('prix')
-    const payement = searchParams.get('payement')
+  // Fonction pour réinitialiser le formulaire
+  const resetForm = () => {
+    setFormData({
+      id_event: formData.id_event, // On garde l'id_event
+      annee_experience: '',
+      centres_interet: [],
+      email: '',
+      entreprise: '',
+      nom: '',
+      poste: '',
+      prenom: '',
+      profil_linkedin: '',
+      recevoir_mises_a_jour: true,
+      region: '',
+      secteur_activite: '',
+      telephone: ''
+    });
+    setQuestionResponses({});
+    setStep(1);
+  };
 
-    if (event) {
-      setEventInfo({
-        titre: event,
-        date: date || '',
-        type: type || '',
-        prix: prix || '',
-        payement: payement || ''
-      })
+  // Fonction pour formater la date
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('fr-FR', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric'
+    });
+  };
+
+  // Fonction pour formater l'heure
+  const formatTime = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleTimeString('fr-FR', {
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  };
+
+  // Fonction pour déterminer le type d'événement
+  const getEventType = (event: Event) => {
+    if (event.is_ongoing) return "En cours";
+    if (event.is_upcoming) return "À venir";
+    if (event.is_past) return "Terminé";
+    return "Événement";
+  };
+
+  // Récupérer les informations de l'événement depuis l'API
+  useEffect(() => {
+    const fetchEventDetails = async () => {
+      try {
+        setLoading(true);
+        const eventId = searchParams.get('id');
+        
+        if (eventId) {
+          const eventData = await eventAPI.getEventById(eventId);
+          
+          setEventInfo({
+            id: eventData.id,
+            titre: eventData.title,
+            date: formatDate(eventData.date_debut),
+            type: getEventType(eventData),
+            lieu: eventData.location,
+            horaire: `${formatTime(eventData.date_debut)} - ${formatTime(eventData.date_fin)}`
+          });
+
+          // Mettre à jour formData avec l'id_event
+          setFormData(prev => ({
+            ...prev,
+            id_event: eventData.id
+          }));
+
+          // Récupérer les questions de l'événement
+          const questionsData = await eventAPI.getEventQuestions(eventId);
+          setQuestions(questionsData);
+        } else {
+          // Fallback pour les anciens liens sans ID
+          const event = searchParams.get('event')
+          const date = searchParams.get('date')
+          const type = searchParams.get('type')
+          const lieu = searchParams.get('lieu')
+
+          setEventInfo({
+            id: '',
+            titre: event || '',
+            date: date || '',
+            type: type || '',
+            lieu: lieu || '',
+            horaire: ''
+          });
+        }
+      } catch (err) {
+        console.error('Erreur:', err);
+        // Fallback si l'API échoue
+        const event = searchParams.get('event')
+        const date = searchParams.get('date')
+        const type = searchParams.get('type')
+        const lieu = searchParams.get('lieu')
+
+        setEventInfo({
+          id: '',
+          titre: event || '',
+          date: date || '',
+          type: type || '',
+          lieu: lieu || '',
+          horaire: ''
+        });
+      } finally {
+        setLoading(false);
+      }
     }
+
+    fetchEventDetails();
   }, [searchParams])
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value
+    })
+  }
+
+  const handleQuestionChange = (questionId: string, value: string) => {
+    setQuestionResponses({
+      ...questionResponses,
+      [questionId]: value
     })
   }
 
@@ -67,14 +209,87 @@ export default function InscriptionForm() {
     setStep(1)
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    const inscriptionData = {
-      ...formData,
-      evenement: eventInfo
+    
+    try {
+      // Gestion du profil LinkedIn
+      let linkedinUrl = formData.profil_linkedin;
+      
+      if (linkedinUrl && linkedinUrl.trim() !== '') {
+        // Si c'est un email, extraire le nom pour créer une URL LinkedIn
+        if (linkedinUrl.includes('@')) {
+          const username = linkedinUrl.split('@')[0];
+          linkedinUrl = `https://linkedin.com/in/${username}`;
+        }
+        // Si ce n'est pas une URL complète mais juste un nom d'utilisateur
+        else if (!linkedinUrl.startsWith('http')) {
+          linkedinUrl = `https://linkedin.com/in/${linkedinUrl}`;
+        }
+      } else {
+        // Si vide, mettre une valeur par défaut
+        linkedinUrl = "https://linkedin.com";
+      }
+
+      const submissionData = {
+        annee_experience: formData.annee_experience || "Non spécifié",
+        centres_interet: Object.values(questionResponses).filter(response => response !== ''),
+        email: formData.email,
+        entreprise: formData.entreprise || "Non spécifié",
+        nom: formData.nom,
+        poste: formData.poste || "Non spécifié",
+        prenom: formData.prenom,
+        profil_linkedin: linkedinUrl,
+        recevoir_mises_a_jour: formData.recevoir_mises_a_jour,
+        region: formData.region || "Non spécifié",
+        secteur_activite: formData.secteur_activite || "Non spécifié",
+        telephone: formData.telephone
+      }
+
+      console.log('Données à envoyer:', JSON.stringify(submissionData, null, 2))
+      console.log('Event ID:', formData.id_event)
+      
+      const result = await eventAPI.registerVisitor(submissionData, formData.id_event)
+      console.log('Réponse de l\'API:', result)
+      
+      // Afficher la modale de succès
+      setModalMessage(`Inscription réussie pour l'événement : ${eventInfo.titre || 'Non spécifié'}`)
+      setShowSuccessModal(true)
+      
+      // Réinitialiser le formulaire
+      resetForm();
+      
+    } catch (error: any) {
+      console.error('Erreur détaillée:', error)
+      console.error('Message:', error.message)
+      
+      // Afficher la modale d'erreur
+      setModalMessage('Erreur lors de l\'inscription. Veuillez réessayer.')
+      setShowErrorModal(true)
     }
-    console.log('Données soumises:', inscriptionData)
-    alert(`Inscription réussie pour l'événement : ${eventInfo.titre || 'Non spécifié'}`)
+  }
+
+  if (loading) {
+    return (
+      <section className="py-16 bg-gradient-to-br from-white via-gray-50 to-yellow-50/20">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <div className="animate-pulse">
+              <div className="h-8 bg-gray-200 rounded w-1/3 mx-auto mb-4"></div>
+              <div className="h-4 bg-gray-200 rounded w-1/2 mx-auto mb-12"></div>
+            </div>
+          </div>
+          <div className="max-w-2xl mx-auto bg-white rounded-2xl shadow-xl p-8 border border-gray-100">
+            <div className="animate-pulse space-y-4">
+              <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+              <div className="h-10 bg-gray-200 rounded"></div>
+              <div className="h-10 bg-gray-200 rounded"></div>
+              <div className="h-10 bg-gray-200 rounded"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+    );
   }
 
   return (
@@ -89,7 +304,7 @@ export default function InscriptionForm() {
           </p>
           <div className="w-20 h-1 bg-gradient-to-r from-yellow-400 to-yellow-500 mx-auto mt-4 rounded-full"></div>
           
-          {/* NOUVEAU : Affichage de l'événement sélectionné */}
+          {/* Affichage de l'événement sélectionné */}
           {eventInfo.titre && (
             <div className="mt-6 inline-block bg-yellow-50 border border-yellow-200 rounded-lg px-6 py-3">
               <p className="text-sm text-gray-600 mb-1">Vous vous inscrivez pour :</p>
@@ -97,15 +312,15 @@ export default function InscriptionForm() {
               {eventInfo.date && (
                 <p className="text-sm text-gray-600 mt-1">📅 {eventInfo.date}</p>
               )}
+              {eventInfo.horaire && (
+                <p className="text-sm text-gray-600">⏰ {eventInfo.horaire}</p>
+              )}
+              {eventInfo.lieu && (
+                <p className="text-sm text-gray-600">📍 {eventInfo.lieu}</p>
+              )}
               {eventInfo.type && (
                 <span className="inline-block mt-2 px-3 py-1 bg-yellow-500 text-white text-xs font-semibold rounded-full">
                   {eventInfo.type}
-                </span>
-              )}
-              <br/>
-               {eventInfo.payement && (
-                <span className="inline-block mt-2 px-3 py-1 text-red-800 text-xs font-semibold rounded-full">
-                   {eventInfo.payement} {eventInfo.prix}
                 </span>
               )}
             </div>
@@ -134,7 +349,7 @@ export default function InscriptionForm() {
               }`}>
                 <span className="font-semibold">2</span>
               </div>
-              <span className="text-xs font-medium mt-2 text-center">Vos attentes<br/>& objectifs</span>
+              <span className="text-xs font-medium mt-2 text-center">Questions<br/>événement</span>
             </div>
           </div>
         </div>
@@ -147,7 +362,7 @@ export default function InscriptionForm() {
               <div className="space-y-5 animate-fade-in">
                 <div className="text-center mb-6">
                   <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">
-                    Informations 
+                    Informations personnelles
                   </h3>
                   <p className="text-sm text-gray-600">
                     Remplissez vos informations de base
@@ -157,7 +372,7 @@ export default function InscriptionForm() {
                 <div className="grid md:grid-cols-2 gap-4">
                   <div className="group">
                     <label className="block text-sm font-semibold text-gray-700 mb-2">
-                      Nom  *
+                      Nom *
                     </label>
                     <input
                       type="text"
@@ -186,12 +401,10 @@ export default function InscriptionForm() {
                   </div>
                 </div>
 
-              
-
                 <div className="grid md:grid-cols-2 gap-4">
                   <div className="group">
                     <label className="block text-sm font-semibold text-gray-700 mb-2">
-                      Téléphone / WhatsApp *
+                      Téléphone *
                     </label>
                     <input
                       type="tel"
@@ -219,39 +432,106 @@ export default function InscriptionForm() {
                     />
                   </div>
                 </div>
-                <div className="group">
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">
-                        Entreprise   <span className="text-gray-500 font-normal ml-1">(Optionnel)</span>
-                    </label>
-                    <input
-                        type="text"
-                        name="entreprise"
-                        value={formData.entreprise}
-                
-                        className="w-full px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:border-yellow-500 focus:bg-white focus:ring-2 focus:ring-yellow-500/20 transition-all duration-300 text-sm"
-                        placeholder="Votre entreprise"
-                        required
-                        />
-                </div>
+
                 <div className="group">
                   <label className="block text-sm font-semibold text-gray-700 mb-2">
-                    Poste / Fonction / Statut
-                    <span className="text-gray-500 font-normal ml-1">(Optionnel)</span>
+                    Entreprise <span className="text-gray-500 font-normal ml-1">(Optionnel)</span>
                   </label>
-                  <select
+                  <input
+                    type="text"
+                    name="entreprise"
+                    value={formData.entreprise}
+                    onChange={handleChange}
+                    className="w-full px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:border-yellow-500 focus:bg-white focus:ring-2 focus:ring-yellow-500/20 transition-all duration-300 text-sm"
+                    placeholder="Votre entreprise"
+                  />
+                </div>
+
+                <div className="group">
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    Poste
+                  </label>
+                  <input
+                    type="text"
                     name="poste"
                     value={formData.poste}
                     onChange={handleChange}
                     className="w-full px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:border-yellow-500 focus:bg-white focus:ring-2 focus:ring-yellow-500/20 transition-all duration-300 text-sm"
+                    placeholder="Votre poste"
+                  />
+                </div>
+
+                <div className="group">
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    Années d'expérience
+                  </label>
+                  <select
+                    name="annee_experience"
+                    value={formData.annee_experience}
+                    onChange={handleChange}
+                    className="w-full px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:border-yellow-500 focus:bg-white focus:ring-2 focus:ring-yellow-500/20 transition-all duration-300 text-sm"
                   >
-                    <option value="">Sélectionnez votre statut</option>
-                    <option value="etudiant">Étudiant</option>
-                    <option value="enseignant">Enseignant</option>
-                    <option value="entrepreneur">Entrepreneur</option>
-                    <option value="salarie">Salarié</option>
-                    <option value="chercheur">Chercheur</option>
-                    <option value="autre">Autre</option>
+                    <option value="">Sélectionnez</option>
+                    <option value="0-2 ans">0-2 ans</option>
+                    <option value="2-5 ans">2-5 ans</option>
+                    <option value="5-10 ans">5-10 ans</option>
+                    <option value="10+ ans">10+ ans</option>
                   </select>
+                </div>
+
+                <div className="group">
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    Secteur d'activité
+                  </label>
+                  <input
+                    type="text"
+                    name="secteur_activite"
+                    value={formData.secteur_activite}
+                    onChange={handleChange}
+                    className="w-full px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:border-yellow-500 focus:bg-white focus:ring-2 focus:ring-yellow-500/20 transition-all duration-300 text-sm"
+                    placeholder="Votre secteur d'activité"
+                  />
+                </div>
+
+                <div className="group">
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    Région
+                  </label>
+                  <input
+                    type="text"
+                    name="region"
+                    value={formData.region}
+                    onChange={handleChange}
+                    className="w-full px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:border-yellow-500 focus:bg-white focus:ring-2 focus:ring-yellow-500/20 transition-all duration-300 text-sm"
+                    placeholder="Votre région"
+                  />
+                </div>
+
+                <div className="group">
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    Profil LinkedIn <span className="text-gray-500 font-normal ml-1">(Optionnel)</span>
+                  </label>
+                  <input
+                    type="url"
+                    name="profil_linkedin"
+                    value={formData.profil_linkedin}
+                    onChange={handleChange}
+                    className="w-full px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:border-yellow-500 focus:bg-white focus:ring-2 focus:ring-yellow-500/20 transition-all duration-300 text-sm"
+                    placeholder="https://linkedin.com/in/votrenom"
+                  />
+                </div>
+
+                <div className="flex items-center">
+                  <input
+                    type="checkbox"
+                    name="recevoir_mises_a_jour"
+                    checked={formData.recevoir_mises_a_jour}
+                    onChange={(e) => setFormData({...formData, recevoir_mises_a_jour: e.target.checked})}
+                    className="w-4 h-4 text-yellow-500 bg-gray-100 border-gray-300 rounded focus:ring-yellow-500 focus:ring-2"
+                  />
+                  <label className="ml-2 text-sm text-gray-700">
+                    Je souhaite recevoir les mises à jour
+                  </label>
                 </div>
 
                 <div className="flex justify-end pt-2">
@@ -274,91 +554,52 @@ export default function InscriptionForm() {
               <div className="space-y-5 animate-fade-in">
                 <div className="text-center mb-6">
                   <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">
-                    Vos attentes et objectifs
+                    Questions de l'événement
                   </h3>
                   <p className="text-sm text-gray-600">
-                    Aidez-nous à mieux vous connaître
+                    Répondez aux questions spécifiques de cet événement
                   </p>
                 </div>
 
-                <div className="group">
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
-                    Comment avez-vous entendu parler de l'événement ? *
-                  </label>
-                  <select
-                    name="source"
-                    value={formData.source}
-                    onChange={handleChange}
-                    className="w-full px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:border-yellow-500 focus:bg-white focus:ring-2 focus:ring-yellow-500/20 transition-all duration-300 text-sm"
-                    required
-                  >
-                    <option value="">Sélectionnez une option</option>
-                    <option value="reseaux-sociaux">Réseaux sociaux</option>
-                    <option value="email">Email</option>
-                    <option value="ami">Ami/Collègue</option>
-                    <option value="affiche">Affiche/Publicité</option>
-                    <option value="site-web">Site web</option>
-                    <option value="autre">Autre</option>
-                  </select>
-                </div>
-
-                <div className="group">
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
-                    Qu'attendez-vous de cet événement ? *
-                  </label>
-                  <textarea
-                    name="attentes"
-                    value={formData.attentes}
-                    onChange={handleChange}
-                    rows={2}
-                    className="w-full px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:border-yellow-500 focus:bg-white focus:ring-2 focus:ring-yellow-500/20 transition-all duration-300 text-sm resize-none"
-                    placeholder="Décrivez vos principales attentes..."
-                    required
-                  />
-                </div>
-
-                <div className="group">
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
-                    Quels sont vos objectifs en participant ?
-                  </label>
-                  <textarea
-                    name="objectifs"
-                    value={formData.objectifs}
-                    onChange={handleChange}
-                    rows={2}
-                    className="w-full px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:border-yellow-500 focus:bg-white focus:ring-2 focus:ring-yellow-500/20 transition-all duration-300 text-sm resize-none"
-                    placeholder="Quels objectifs souhaitez-vous atteindre ?"
-                  />
-                </div>
-
-                <div className="group">
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
-                    Qu'aimeriez-vous apprendre ou découvrir ?
-                  </label>
-                  <textarea
-                    name="apprentissage"
-                    value={formData.apprentissage}
-                    onChange={handleChange}
-                    rows={2}
-                    className="w-full px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:border-yellow-500 focus:bg-white focus:ring-2 focus:ring-yellow-500/20 transition-all duration-300 text-sm resize-none"
-                    placeholder="Quelles compétences ou connaissances souhaitez-vous acquérir ?"
-                  />
-                </div>
-
-                <div className="group">
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
-                    Qu'espérez-vous obtenir à la fin de cet événement ? *
-                  </label>
-                  <textarea
-                    name="resultats"
-                    value={formData.resultats}
-                    onChange={handleChange}
-                    rows={2}
-                    className="w-full px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:border-yellow-500 focus:bg-white focus:ring-2 focus:ring-yellow-500/20 transition-all duration-300 text-sm resize-none"
-                    placeholder="Quels résultats concrets attendez-vous ?"
-                    required
-                  />
-                </div>
+                {questions.length > 0 ? (
+                  questions.map((question) => (
+                    <div key={question.id} className="group">
+                      <label className="block text-sm font-semibold text-gray-700 mb-2">
+                        {question.question_text}
+                        {question.is_required && <span className="text-red-500 ml-1">*</span>}
+                      </label>
+                      
+                      {question.question_type === 'multiple_choice' ? (
+                        <select
+                          value={questionResponses[question.id] || ''}
+                          onChange={(e) => handleQuestionChange(question.id, e.target.value)}
+                          className="w-full px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:border-yellow-500 focus:bg-white focus:ring-2 focus:ring-yellow-500/20 transition-all duration-300 text-sm"
+                          required={question.is_required}
+                        >
+                          <option value="">Sélectionnez une option</option>
+                          {question.options.map((option, index) => (
+                            <option key={index} value={option}>
+                              {option}
+                            </option>
+                          ))}
+                        </select>
+                      ) : (
+                        <input
+                          type="text"
+                          value={questionResponses[question.id] || ''}
+                          onChange={(e) => handleQuestionChange(question.id, e.target.value)}
+                          className="w-full px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:border-yellow-500 focus:bg-white focus:ring-2 focus:ring-yellow-500/20 transition-all duration-300 text-sm"
+                          placeholder="Votre réponse"
+                          required={question.is_required}
+                        />
+                      )}
+                    </div>
+                  ))
+                ) : (
+                  <div className="text-center py-8">
+                    <p className="text-gray-500">Aucune question n'est disponible pour cet événement.</p>
+                  </div>
+                )}
 
                 <div className="flex justify-between pt-4">
                   <button
@@ -384,9 +625,6 @@ export default function InscriptionForm() {
                 </div>
               </div>
             )}
-
-            {/* Fin du formulaire */}
-            
           </form>
         </div>
 
@@ -397,6 +635,73 @@ export default function InscriptionForm() {
           </p>
         </div>
       </div>
+
+      {/* Modale de Succès */}
+      {showSuccessModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full transform transition-all duration-300 scale-100">
+            <div className="p-6 text-center">
+              {/* Icône de succès */}
+              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg className="w-8 h-8 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"/>
+                </svg>
+              </div>
+              
+              <h3 className="text-xl font-bold text-gray-900 mb-2">Inscription Réussie !</h3>
+              <p className="text-gray-600 mb-2">{modalMessage}</p>
+              <p className="text-sm text-green-600 mb-6">
+                ✅ Le formulaire a été réinitialisé pour une nouvelle inscription
+              </p>
+              
+              <button
+                onClick={() => setShowSuccessModal(false)}
+                className="bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-semibold py-3 px-8 rounded-lg transition-all duration-300 transform hover:scale-105 w-full"
+              >
+                Super !
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modale d'Erreur */}
+      {showErrorModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full transform transition-all duration-300 scale-100">
+            <div className="p-6 text-center">
+              {/* Icône d'erreur */}
+              <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg className="w-8 h-8 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+              </div>
+              
+              <h3 className="text-xl font-bold text-gray-900 mb-2">Oups !</h3>
+              <p className="text-gray-600 mb-6">{modalMessage}</p>
+              
+              <div className="flex space-x-3">
+                <button
+                  onClick={() => setShowErrorModal(false)}
+                  className="flex-1 bg-gray-500 hover:bg-gray-600 text-white font-semibold py-3 px-4 rounded-lg transition-all duration-300"
+                >
+                  Fermer
+                </button>
+                <button
+                  onClick={() => {
+                    setShowErrorModal(false)
+                    // Optionnel : revenir à l'étape 1 pour corriger
+                    setStep(1)
+                  }}
+                  className="flex-1 bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 text-white font-semibold py-3 px-4 rounded-lg transition-all duration-300 transform hover:scale-105"
+                >
+                  Corriger
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       <style jsx>{`
         @keyframes fadeIn {
@@ -409,8 +714,52 @@ export default function InscriptionForm() {
             transform: translateY(0);
           }
         }
+        @keyframes scaleIn {
+          from {
+            opacity: 0;
+            transform: scale(0.9);
+          }
+          to {
+            opacity: 1;
+            transform: scale(1);
+          }
+        }
+        @keyframes bounceIn {
+          0% {
+            opacity: 0;
+            transform: scale(0.3);
+          }
+          50% {
+            opacity: 1;
+            transform: scale(1.05);
+          }
+          70% {
+            transform: scale(0.9);
+          }
+          100% {
+            opacity: 1;
+            transform: scale(1);
+          }
+        }
+        @keyframes check {
+          from {
+            stroke-dashoffset: 50;
+          }
+          to {
+            stroke-dashoffset: 0;
+          }
+        }
         .animate-fade-in {
-          animation: fadeIn 0.4s ease-out;
+          animation: fadeIn 0.3s ease-out;
+        }
+        .animate-scale-in {
+          animation: scaleIn 0.3s ease-out;
+        }
+        .animate-bounce-in {
+          animation: bounceIn 0.6s ease-out;
+        }
+        .animate-check {
+          animation: check 0.5s ease-out forwards;
         }
       `}</style>
     </section>
