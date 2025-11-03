@@ -1,23 +1,28 @@
 import { NextConfig } from 'next';
 import createNextIntlPlugin from 'next-intl/plugin';
 
-
-const withPWA = require('next-pwa')({
+const withPWA = require('@ducanh2912/next-pwa').default({
   dest: 'public',
-  register: true,
-  skipWaiting: true,
-  disable: process.env.NODE_ENV === 'development'
+  cacheOnFrontEndNav: true,
+  aggressiveFrontEndNavCaching: true,
+  reloadOnOnline: true,
+  swcMinify: true,
+  disable: process.env.NODE_ENV === 'development',
+  workboxOptions: {
+    disableDevLogs: true,
+  }
 });
 
-
 const nextConfig: NextConfig = {
-    images: {
-        domains: ['images.unsplash.com','randomuser.me'],
-    }, 
-    eslint: {
+  images: {
+    domains: ['images.unsplash.com', 'randomuser.me'],
+  }, 
+  eslint: {
     ignoreDuringBuilds: process.env.NODE_ENV === 'production',
   },
 };
 
 const withNextIntl = createNextIntlPlugin();
-export default withNextIntl(nextConfig);
+
+// CORRECTION ICI : Appliquer withPWA ET withNextIntl
+export default withNextIntl(withPWA(nextConfig));
