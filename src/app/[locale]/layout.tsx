@@ -8,24 +8,27 @@ import NavBar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import PageLoader from '@/components/PageLoader';
 import { Suspense } from 'react';
-import Head from 'next/head';
+import type { Metadata } from 'next';
 
-<Head>
-  <link rel="manifest" href="/manifest.json" />
-  <meta name="theme-color" content="#000000" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-</Head>
-
-
-
-export const metadata = {
+// Metadata pour PWA
+export const metadata: Metadata = {
   title: {
     default: 'EventHub',
-    template: '%s | EventHub' // %s sera remplacé par le titre de chaque page
+    template: '%s | EventHub'
   },
   description: 'Plateforme de réservation et organisation d\'événements',
-}
-
+  manifest: '/manifest.json',
+  themeColor: '#000000',
+  viewport: {
+    width: 'device-width',
+    initialScale: 1,
+    maximumScale: 1,
+  },
+  icons: {
+    icon: '/icon-192x192.png',
+    apple: '/icon-192x192.png',
+  },
+};
 
 export default async function LocaleLayout({
   children,
@@ -44,6 +47,12 @@ export default async function LocaleLayout({
 
   return (
     <html lang={locale} suppressHydrationWarning>
+      <head>
+        <link rel="manifest" href="/manifest.json" />
+        <meta name="theme-color" content="#000000" />
+        <link rel="icon" href="/icon-192x192.png" />
+        <link rel="apple-touch-icon" href="/icon-192x192.png" />
+      </head>
       <body>
         <NextIntlClientProvider locale={locale} messages={messages}>
           <Providers>
