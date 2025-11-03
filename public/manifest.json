@@ -1,25 +1,42 @@
 {
-  "name": "EventHub",
+  "name": "EventHub - Plateforme de réservation d'événements",
   "short_name": "EventHub",
-  "description": "Plateforme de réservation et organisation d'événements",
+  "description": "Plateforme complète de réservation et organisation d'événements pour tous vos besoins",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#000000",
   "orientation": "portrait",
   "scope": "/",
+  "lang": "fr",
+  "dir": "ltr",
+  "categories": ["events", "booking", "entertainment"],
   "icons": [
     {
       "src": "/icon-192x192.png",
       "sizes": "192x192",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
     },
     {
       "src": "/icon-512x512.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
     }
-  ]
+  ],
+  "screenshots": [],
+  "shortcuts": []
 }
