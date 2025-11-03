@@ -44,6 +44,15 @@ export default function InscriptionForm() {
   const [questions, setQuestions] = useState<Question[]>([])
   const [questionResponses, setQuestionResponses] = useState<{[key: string]: string}>({})
   
+
+  const [isSubmitting, setIsSubmitting] = useState(false)
+
+  
+
+
+
+
+
   // État pour stocker les informations de l'événement sélectionné
   const [eventInfo, setEventInfo] = useState({
     id: '',
@@ -211,7 +220,7 @@ export default function InscriptionForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    
+    setIsSubmitting(true) 
     try {
       // Gestion du profil LinkedIn
       let linkedinUrl = formData.profil_linkedin;
@@ -266,7 +275,9 @@ export default function InscriptionForm() {
       // Afficher la modale d'erreur
       setModalMessage('Erreur lors de l\'inscription. Veuillez réessayer.')
       setShowErrorModal(true)
-    }
+    }finally {
+    setIsSubmitting(false) // Désactiver le chargement dans tous les cas
+  }
   }
 
   if (loading) {
@@ -613,14 +624,28 @@ export default function InscriptionForm() {
                     <span>Retour</span>
                   </button>
 
+                
                   <button
                     type="submit"
-                    className="bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 text-white font-semibold py-2.5 px-6 rounded-lg transition-all duration-300 transform hover:scale-105 flex items-center space-x-2 shadow-md hover:shadow-lg"
+                    disabled={isSubmitting}
+                    className="bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 text-white font-semibold py-2.5 px-6 rounded-lg transition-all duration-300 transform hover:scale-105 flex items-center space-x-2 shadow-md hover:shadow-lg disabled:opacity-70 disabled:cursor-not-allowed disabled:transform-none"
                   >
-                    <span>Finaliser l'inscription</span>
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"/>
-                    </svg>
+                    {isSubmitting ? (
+                      <>
+                        <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        <span>Chargement...</span>
+                      </>
+                    ) : (
+                      <>
+                        <span>Finaliser l'inscription</span>
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"/>
+                        </svg>
+                      </>
+                    )}
                   </button>
                 </div>
               </div>
